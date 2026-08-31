@@ -1,0 +1,25 @@
+{
+  "name": "api_express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" :"node app.js" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julianevesdesouza09-jpg/API_express.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/julianevesdesouza09-jpg/API_express/issues"
+  },
+  "homepage": "https://github.com/julianevesdesouza09-jpg/API_express#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
