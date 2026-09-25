@@ -1,44 +1,70 @@
-import express from 'express';
-
+import projetoExprex from 'projetoExprex.js'
 const app = express();
-const PORT = 3000;
-const usuarios = [
-    {id:1 , nome: "Júlia"} ,
-    {id:2 , nome: "Heloísa"},
-    {id:13, nome: "Cesar"}
-]
+app.use(express.json());
 
-app.get('/', (req , res) => { 
-    res.send('Seja Bem-Vindo ao Express');
+const PORT =3000;
+const tarefas =[
+    {id:1, nome:"Limpar a casa", concluida:true},
+    {id:2, nome:"Lavar a louça", concluida:true},
+    {id:3, nome:"Passar roupa", concluida: true}
+
+];
+app.get('/',(req,res) => {
+    res.send('API de tarefas no ar')
 });
+app.get('/tarefas',(req,res)=> {
+    res.json(tarefas)
 
-app.get('/usuarios' , (req , res) => {
-    res.json(usuarios);
-    
-})
-
-app.post( '/usuarios', (res , req) => {
-    const novoUsuarios = {
-        id: usuarios.length + 1,
-        nome: 'Vitor'
-    }
-     usuarios.push(novoUsuarios);
-     res.status(201).json(novoUsuarios)
 });
-
-app.get('/usuarios/ :id' ,(req , res)=>{
+app.get('/tarefas/:id',(req,res)=> {
     const id = req.params.id;
-    const usuarios = usuarios.find(
-        u => u.id === parseInt(id)
-    );
-    if(!usuarios){
-        return res.status(404).json({error:'Usuarios não encontrado!'})
+    if(id===undefined || typeof id !=="number"){
+        return res
+        .status(404)
+        .json({erro: 'Id não encontrado'})
     }
-    res.status(200).json(usuarios);
-})
+});
+app.get('/tarefas',(req,res)=> {
+    res.json(tarefas)
+const status = req.query.status;
+let resultado=tarefas;
+if(status){
+    resultado=resultado.filter((tarefas) => {
+        tarefas.status === status;
+    });
 
-app.listen(PORT, () => {
-    console.log(
-        'Servidor rodando em http://localhost:${PORT}'
-    );
-})
+} res.json(resultado);
+});
+app.post('/tarefas', (req, res) => {
+    const {titulo}=req.body;
+    const tarefaNova = [
+        {id: tarefas.length +1},
+        { titulo: titulo,},
+        {concluida: true}
+    ]   
+    tarefas.push(tarefaNova);
+    return res
+    .status(201)
+});
+function autenticar (req, res, next) {
+    console.log('Autenticado');
+    next();
+};
+app.use(autenticar);
+
+function validacaoDoCorpo(req, res, next){
+    if(!req.body.titulo){
+        return res.status(400).json({erro: 'O título é obrigatório'})
+    };
+    next();
+}
+function registrarLog (req, res, next){
+    console.log('Registro feito');
+    next()
+};
+app.post('/tarefas' )[
+        autenticar,
+        validacaoDoCorpo,
+        registrarLog
+    ]
+    res.status(201).json({mensagem: 'Tarefa criada'});
